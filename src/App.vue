@@ -7,7 +7,7 @@
     <svg width="600" height="600">
       <g>
         <polyline
-          :points="`300,${stroke / 2} 300,${600 - stroke / 2}`"
+          :points="`300,${stroke / 2} 300,${600 - stroke}`"
           stroke="black"
           :stroke-width="stroke"
           stroke-linecap="round"
@@ -97,14 +97,14 @@ export default class App extends Vue {
     });
     const hundredsLines = JSON.parse(JSON.stringify(this.map2[this.digits[1]]));
     hundredsLines.forEach((line: number[][]) => {
-      line[0] = this.offsetYPoint(line[0]);
-      line[1] = this.offsetYPoint(line[1]);
+      line[0] = this.offsetYPoint(this.mirrorYPoint(line[0]));
+      line[1] = this.offsetYPoint(this.mirrorYPoint(line[1]));
     });
 
     const thousandsLines = JSON.parse(JSON.stringify(this.map2[this.digits[0]]));
     thousandsLines.forEach((line: number[][]) => {
-      line[0] = this.mirrorXPoint(this.offsetYPoint(line[0]));
-      line[1] = this.mirrorXPoint(this.offsetYPoint(line[1]));
+      line[0] = this.mirrorXPoint(this.offsetYPoint(this.mirrorYPoint(line[0])));
+      line[1] = this.mirrorXPoint(this.offsetYPoint(this.mirrorYPoint(line[1])));
     });
     this.lines = unitLines.concat(tensLines).concat(hundredsLines).concat(thousandsLines);
   }
@@ -121,8 +121,12 @@ export default class App extends Vue {
     return [-point[0] + 2 * this.xMiddle, point[1]];
   }
 
+  mirrorYPoint(point: number[]) {
+    return [point[0], -point[1]];
+  }
+
   offsetYPoint(point: number[]) {
-    return [point[0], point[1] + 396];
+    return [point[0], point[1] + 600 - this.stroke / 2];
   }
 
   mounted() {
