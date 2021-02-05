@@ -1,25 +1,28 @@
 <template>
   <div class="input-zone">
-    <p>Change the value here (0 to 9999) :</p>
-    <input type="number" v-model="number" id="input-number" maxlength="4" @input="compute" />
+    <p>Pick a number :</p>
+    <input type="number" v-model="number" id="input-number" min="0" max="9999" @input="compute" />
   </div>
   <div class="svg-zone">
     <svg width="600" height="600">
       <g>
-        <line x1="300" y1="0" x2="300" y2="600" stroke="black" stroke-width="8" />
-        <line
+        <polyline
+          :points="`300,${stroke / 2} 300,${600 - stroke / 2}`"
+          stroke="black"
+          :stroke-width="stroke"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <polyline
           v-for="(line, index) in lines"
           :key="index"
-          :x1="line[0][0]"
-          :y1="line[0][1]"
-          :x2="line[1][0]"
-          :y2="line[1][1]"
+          :points="`${line[0][0]},${line[0][1]} ${line[1][0]},${line[1][1]}`"
+          fill="none"
           stroke="black"
-          stroke-width="8"
+          :stroke-width="stroke"
+          stroke-linecap="round"
+          stroke-linejoin="round"
         />
-        <!-- <polygon :points="points"></polygon>
-    <circle cx="100" cy="100" r="80"></circle>
-    <axis-label v-for="(stat, index) in stats" :stat="stat" :index="index" :total="stats.length"> </axis-label> -->
       </g>
     </svg>
   </div>
@@ -32,19 +35,13 @@ import { Options, Vue } from 'vue-class-component';
   components: {}
 })
 export default class App extends Vue {
-  zero = 4;
+  stroke = 15;
+
+  zero = this.stroke / 2;
 
   number = 1983;
 
   digits = [0, 0, 0, 0];
-
-  unit = [1, 0];
-
-  tens = [-1, 0];
-
-  hundreds = [1, 2];
-
-  thousands = [-1, 2];
 
   xMiddle = 300;
 
@@ -89,15 +86,8 @@ export default class App extends Vue {
   // https://developer.mozilla.org/en-US/docs/Web/SVG/Element
   lines: number[][][] = [];
 
-  // tensLines: number[][][] = [];
-
-  // hundredsLines: number[][][] = [];
-
-  // thousandsLines: number[][][] = [];
-
   compute() {
     this.getDigits();
-    console.log(this.digits[2], this.digits[3]);
     this.xOffset = 200;
     const unitLines = JSON.parse(JSON.stringify(this.map2[this.digits[3]]));
     const tensLines = JSON.parse(JSON.stringify(this.map2[this.digits[2]]));
@@ -128,16 +118,29 @@ export default class App extends Vue {
   }
 
   mirrorXPoint(point: number[]) {
-    return [-(point[0] - this.xMiddle) + this.xMiddle, point[1]];
+    return [-point[0] + 2 * this.xMiddle, point[1]];
   }
 
   offsetYPoint(point: number[]) {
     return [point[0], point[1] + 396];
   }
+
+  mounted() {
+    const uri = window.location.search.substring(1);
+    const params = new URLSearchParams(uri);
+    const input = params.get('n');
+    if (input && parseInt(input, 10)) {
+      this.number = parseInt(input, 10);
+    }
+    this.compute();
+  }
 }
 </script>
 
 <style lang="scss">
+h1 {
+  font-size: 5em;
+}
 body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
@@ -162,7 +165,14 @@ body {
   // }
 }
 .input-zone {
+  display: flex;
+  align-items: center;
+
+  p {
+    margin-right: 2em;
+  }
 }
+
 .svg-zone {
   margin: 2em;
   // border: 4px solid black;
