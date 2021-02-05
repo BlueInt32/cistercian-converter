@@ -1,4 +1,7 @@
 <template>
+  <a class="github-link" target="_blank" href="https://github.com/BlueInt32/cistercian-converter">
+    <img src="@/assets/github.png" alt="github" />
+  </a>
   <div class="input-zone">
     <p>Pick a number :</p>
     <input type="number" v-model="number" id="input-number" min="0" max="9999" @input="compute" />
@@ -180,5 +183,11 @@ body {
 .svg-zone {
   margin: 2em;
   // border: 4px solid black;
+}
+.github-link {
+  display: inline-block;
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
 }
 </style>
