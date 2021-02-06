@@ -1,24 +1,9 @@
 # cistercian-converter
 
-## Project setup
-```
-npm install
-```
+What is that ?
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+https://en.wikipedia.org/wiki/The_Ciphers_of_the_Monks
 
-### Compiles and minifies for production
-```
-npm run build
-```
+Where can I test this ?
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+http://vps668318.ovh.net/cistercian
